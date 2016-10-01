@@ -1,5 +1,7 @@
 package com.example.herojeff.myapplication;
 
+import android.appwidget.AppWidgetHost;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -32,14 +34,21 @@ public class MainActivity extends AppCompatActivity {
     }
     Pac[] pacs;
     PackageManager pm;
+    AppWidgetManager mAppWidgetManager;
+    AppWidgetHost mAppWidgetHost;
 
     static boolean appLaunchable = true;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.BackTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAppWidgetManager = AppWidgetManager.getInstance(this);
+        mAppWidgetHost = new AppWidgetHost(this,R.id.APPWIDGET_HOST_ID);
+
         drawerGrid = (GridView) findViewById(R.id.content);//gridView 가져오기
         slidingDrawer = (SlidingDrawer)findViewById(R.id.drawer);
         homeView=(RelativeLayout)findViewById(R.id.home_view);

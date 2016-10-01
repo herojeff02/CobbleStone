@@ -16,11 +16,15 @@
         <ImageView
             android:id="@+id/handle"
             android:background="@mipmap/ic_launcher"
-            android:layout_height="30dp"
-            android:layout_width="50dp" />
+            android:gravity="center_horizontal"
+            android:layout_height="15dp"
+            android:layout_width="375dp"
+            android:paddingBottom="30dp"/>
         <GridView
             android:id="@+id/content"
-            android:padding="15dp"
+            android:paddingTop="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:scrollbars="none"
             android:overScrollMode="always"
             android:layout_width="match_parent"
@@ -35,10 +39,4 @@
         />
     </SlidingDrawer>
 
-    <AnalogClock
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/analogClock"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
 </RelativeLayout>
