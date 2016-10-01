@@ -1,5 +1,6 @@
 package com.example.herojeff.myapplication;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,7 +23,10 @@ public class DrawerClickListener implements AdapterView.OnItemClickListener{
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
         if(MainActivity.appLaunchable) {
-            Intent launchIntent = pmForListener.getLaunchIntentForPackage(pacsForAdapter[pos].name);
+            Intent launchIntent = new Intent(Intent.ACTION_MAIN);
+            launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            ComponentName cp = new ComponentName(pacsForAdapter[pos].packageName, pacsForAdapter[pos].name);
+            launchIntent.setComponent(cp);
             mContext.startActivity(launchIntent);
         }
     }

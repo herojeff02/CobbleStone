@@ -10,12 +10,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
-import android.view.WindowManager;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.SlidingDrawer;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -30,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     class Pac{
         Drawable icon;
         String name;
+        String packageName;
         String label;
     }
     Pac[] pacs;
@@ -63,14 +61,15 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0;i<pacsList.size();i++){
             pacs[i]=new Pac();
             pacs[i].icon=pacsList.get(i).loadIcon(pm);
-            pacs[i].name=pacsList.get(i).activityInfo.packageName;
+            pacs[i].name =pacsList.get(i).activityInfo.name;
+            pacs[i].packageName =pacsList.get(i).activityInfo.packageName;
             pacs[i].label =pacsList.get(i).loadLabel(pm).toString();
         }
         new SortApps().exchange_sort(pacs);
         drawerAdapterObject = new DrawerAdapter(this, pacs);
         drawerGrid.setAdapter(drawerAdapterObject);
+        slidingDrawer.bringToFront();
         drawerGrid.setOnItemClickListener(new DrawerClickListener(this, pacs, pm));//앱 실행
-        drawerGrid.setOnItemLongClickListener(new DrawerLongClockListener(this, slidingDrawer, homeView));
     }
     public class PacReceiver extends BroadcastReceiver{
 
@@ -83,13 +82,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK) {
-            slidingDrawer.animateClose();
-        }
-        if(keyCode == KeyEvent.KEYCODE_HOME) {
-            slidingDrawer.animateClose();
+            if(slidingDrawer.isOpened()) {
+                slidingDrawer.animateClose();
+            }
         }
         if(keyCode == KeyEvent.KEYCODE_MENU){
-            slidingDrawer.animateClose();
+            if(slidingDrawer.isOpened()) {
+                slidingDrawer.animateClose();
+            }
         }
         return true;
     }
