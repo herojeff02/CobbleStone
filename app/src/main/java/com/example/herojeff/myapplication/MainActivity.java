@@ -1,5 +1,6 @@
 package com.example.herojeff.myapplication;
 
+
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -24,6 +25,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created by herojeff on 2016. 9. 13..
@@ -53,8 +55,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.BackTheme);
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        tintManager.setStatusBarTintEnabled(true);
-        tintManager.setNavigationBarTintEnabled(true);
+        //tintManager.setTintColor(Color.parseColor("#00000000"));
+        tintManager.setStatusBarTintEnabled(false);
+        tintManager.setNavigationBarTintEnabled(false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -167,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         slidingDrawer.bringToFront();
         drawerGrid.setOnItemClickListener(new DrawerClickListener(this, pacs, pm));//앱 실행
     }
-    public class PacReceiver extends BroadcastReceiver{
+    public class PacReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {

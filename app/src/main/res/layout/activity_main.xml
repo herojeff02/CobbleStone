@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="false"
     tools:context="com.example.herojeff.myapplication.MainActivity"
     android:id="@+id/home_view">
     <SlidingDrawer
@@ -13,23 +14,22 @@
         android:handle="@+id/handle"
         android:content="@+id/content"
         android:topOffset="50dp">
-        <ImageView
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#50000000"
             android:id="@+id/handle"
-            android:background="@mipmap/ic_launcher"
-            android:gravity="center_horizontal"
-            android:layout_height="15dp"
-            android:layout_width="375dp"
-            android:paddingBottom="30dp"/>
+            >
+        </RelativeLayout>
         <GridView
             android:id="@+id/content"
-            android:paddingTop="15dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:scrollbars="none"
-            android:overScrollMode="always"
+            android:overScrollMode="never"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#80000000"
+            android:background="#40000000"
             android:columnWidth="40dp"
             android:numColumns="4"
             android:verticalSpacing="14dp"
