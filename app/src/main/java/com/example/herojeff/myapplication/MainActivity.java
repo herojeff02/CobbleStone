@@ -15,9 +15,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.SlidingDrawer;
+
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +52,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.BackTheme);
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setNavigationBarTintEnabled(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         mAppWidgetManager = AppWidgetManager.getInstance(this);
         mAppWidgetHost = new AppWidgetHost(this,R.id.APPWIDGET_HOST_ID);
@@ -126,7 +133,10 @@ public class MainActivity extends AppCompatActivity {
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
         AppWidgetHostView hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
         hostView.setAppWidget(appWidgetId, appWidgetInfo);
-        homeView.addView(hostView);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        homeView.addView(hostView, lp);
+        slidingDrawer.bringToFront();
     }
     @Override
     protected void onStart() {
