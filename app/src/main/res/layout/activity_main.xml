@@ -3,18 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
-
-    <Button
-        android:id="@+id/apps_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:text="Show Apps"
-        android:onClick="showApps"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.herojeff.myapplication.MainActivity"
+    android:id="@+id/home_view">
+    <SlidingDrawer
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/drawer"
+        android:handle="@+id/handle"
+        android:content="@+id/content"
+        android:topOffset="50dp">
+        <ImageView
+            android:id="@+id/handle"
+            android:background="@mipmap/ic_launcher"
+            android:layout_height="30dp"
+            android:layout_width="50dp" />
+        <GridView
+            android:id="@+id/content"
+            android:padding="15dp"
+            android:scrollbars="none"
+            android:overScrollMode="always"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#80000000"
+            android:columnWidth="40dp"
+            android:numColumns="4"
+            android:verticalSpacing="14dp"
+            android:horizontalSpacing="30dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center"
         />
-
+    </SlidingDrawer>
 </RelativeLayout>
