@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.SlidingDrawer;
 
@@ -32,6 +33,7 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity {
     DrawerAdapter drawerAdapterObject;
+
     GridView drawerGrid;
     SlidingDrawer slidingDrawer;
     RelativeLayout homeView;
@@ -51,14 +53,20 @@ public class MainActivity extends AppCompatActivity {
     static boolean appLaunchable = true;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.BackTheme);
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        //tintManager.setTintColor(Color.parseColor("#00000000"));
-        tintManager.setStatusBarTintEnabled(false);
-        tintManager.setNavigationBarTintEnabled(false);
+        setTheme(R.style.LolTheme);
+        if(android.os.Build.VERSION.SDK_INT<=19) {
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setTintColor(R.color.dockColor);
+            tintManager.setStatusBarTintColor(R.color.dockColor);
+            tintManager.setStatusBarTintEnabled(false);
+            tintManager.setNavigationBarTintEnabled(true);
+        }
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
 
@@ -67,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         drawerGrid = (GridView) findViewById(R.id.content);//gridView 가져오기
         slidingDrawer = (SlidingDrawer)findViewById(R.id.drawer);
-        homeView=(RelativeLayout)findViewById(R.id.home_view);
+        homeView=(RelativeLayout)findViewById(R.id.home);
         pm = getPackageManager();
         set_pacs();
 
@@ -75,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View v) {
                 selectWidget();
+                if(slidingDrawer.isOpened())
+                    slidingDrawer.animateClose();
                 return false;
             }
         });
@@ -85,8 +95,25 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         filter.addDataScheme("package");//왜 추가?
         registerReceiver(new PacReceiver(), filter);
+
+        buttonsListener();
+        //colorManager(slidingDrawer.isOpened(),tintManager);
+
+        /*
+        final PackageManager pm = getPackageManager();
+        //get a list of installed apps.
+        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        */
     }
 
+    /*
+    public void colorManager(boolean opened, SystemBarTintManager tintManager){
+        if(opened)
+            tintManager.setStatusBarTintEnabled(true);
+        else
+            tintManager.setStatusBarTintEnabled(false);
+    }
+*/
     void selectWidget(){
         int appWidgetId = this.mAppWidgetHost.allocateAppWidgetId();
         Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
@@ -130,6 +157,14 @@ public class MainActivity extends AppCompatActivity {
             createWidget(data);
         }
     }
+    public void removeWidget(Intent data) {
+        Bundle extras = data.getExtras();
+        int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+        AppWidgetHostView hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+        hostView.setAppWidget(appWidgetId, appWidgetInfo);
+        homeView.removeView(hostView);
+    }
     public void createWidget(Intent data) {
         Bundle extras = data.getExtras();
         int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
@@ -150,6 +185,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         mAppWidgetHost.stopListening();
+        try{///////////////////////////////////////////////////////////////////연구 필요
+            unregisterReceiver(new PacReceiver());
+        }
+        catch(IllegalArgumentException e){
+        }
+    }
+
+    public void buttonsListener(){
+        ImageButton chat = (ImageButton)findViewById(R.id.chat);
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("chat pressed");
+            }
+        });
+        ImageButton dial = (ImageButton)findViewById(R.id.dial);
+        dial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("dial pressed");
+            }
+        });
     }
 
     public void set_pacs() {
@@ -169,9 +226,9 @@ public class MainActivity extends AppCompatActivity {
         drawerGrid.setAdapter(drawerAdapterObject);
         slidingDrawer.bringToFront();
         drawerGrid.setOnItemClickListener(new DrawerClickListener(this, pacs, pm));//앱 실행
+        drawerGrid.setOnItemLongClickListener(new DrawerLongClickListener(this, pacs, pm));
     }
     public class PacReceiver extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             set_pacs();
@@ -186,6 +243,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if(keyCode == KeyEvent.KEYCODE_MENU){
+
+        }
+
+        if(keyCode == KeyEvent.KEYCODE_HOME){
             if(slidingDrawer.isOpened()) {
                 slidingDrawer.animateClose();
             }

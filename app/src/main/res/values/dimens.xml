@@ -2,4 +2,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="mainIconSize">60dp</dimen>
+    <dimen name="drawerIconSize">40dp</dimen>
+    <dimen name="handleSize">80dp</dimen>
+    <dimen name="reversehandleSize">-80dp</dimen>
 </resources>

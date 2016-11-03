@@ -56,7 +56,6 @@ public class DrawerAdapter extends BaseAdapter {
         }
         viewHolder.text.setText(pacsForAdapter[pos].label);
         viewHolder.icon.setImageDrawable(pacsForAdapter[pos].icon);
-
         return convertView;
     }
 }

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "295384260818",
+    "firebase_url": "https://first-project-956a2.firebaseio.com",
+    "project_id": "first-project-956a2",
+    "storage_bucket": "first-project-956a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295384260818:android:f47f1b0c698b7fda",
+        "android_client_info": {
+          "package_name": "com.example.herojeff.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "295384260818-s4s2tjla7m9dk1n9vab4ja7lmen74f55.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJndWo79FMZHMvWUPziAdd1_HofbMbs8g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

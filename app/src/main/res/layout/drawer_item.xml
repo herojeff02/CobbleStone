@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="70dp"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal">
     <ImageView
@@ -12,10 +12,14 @@
     <TextView
         android:id="@+id/icon_text"
         android:textSize="11dp"
-        android:layout_width="match_parent"
+        android:layout_width="70dp"
         android:layout_height="40dp"
         android:maxLines="2"
         android:textColor="#FFFFFF"
+        android:shadowColor="#222222"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="17"
         android:gravity="center_horizontal"/>
 
 </LinearLayout>
