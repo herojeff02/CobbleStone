@@ -22,6 +22,7 @@ public class DrawerClickListener implements AdapterView.OnItemClickListener{
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+        MainActivity.appPos=pos;
         if(MainActivity.appLaunchable) {
             Intent launchIntent = new Intent(Intent.ACTION_MAIN);
             launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);

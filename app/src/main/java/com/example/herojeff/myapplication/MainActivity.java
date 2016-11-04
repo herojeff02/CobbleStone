@@ -12,11 +12,13 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     int REQUEST_PICK_APPWIDGET = 120;
 
     static boolean appLaunchable = true;
+    static int appPos=10;
 
 
 
@@ -104,6 +107,11 @@ public class MainActivity extends AppCompatActivity {
         //get a list of installed apps.
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
         */
+
+
+
+
+
     }
 
     /*
@@ -113,7 +121,9 @@ public class MainActivity extends AppCompatActivity {
         else
             tintManager.setStatusBarTintEnabled(false);
     }
+
 */
+
     void selectWidget(){
         int appWidgetId = this.mAppWidgetHost.allocateAppWidgetId();
         Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
@@ -225,9 +235,31 @@ public class MainActivity extends AppCompatActivity {
         drawerAdapterObject = new DrawerAdapter(this, pacs);
         drawerGrid.setAdapter(drawerAdapterObject);
         slidingDrawer.bringToFront();
-        drawerGrid.setOnItemClickListener(new DrawerClickListener(this, pacs, pm));//앱 실행
-        drawerGrid.setOnItemLongClickListener(new DrawerLongClickListener(this, pacs, pm));
+        DrawerClickListener drawerClickListener = new DrawerClickListener(this, pacs, pm);
+        drawerGrid.setOnItemClickListener(drawerClickListener);//앱 실행
+        drawerGrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                DrawerLongClickListener(pacs, i);
+                return false;
+            }
+        });
+
     }
+
+    void DrawerLongClickListener(MainActivity.Pac[] pacs, int pos){
+        appPos=pos;
+        MainActivity.Pac[] pacsForAdapter;
+        pacsForAdapter=pacs;
+
+        Uri packageURI = Uri.parse("package:" + Uri.parse(pacsForAdapter[pos].packageName));
+        Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI)
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(uninstallIntent);
+    }
+
     public class PacReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -243,7 +275,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if(keyCode == KeyEvent.KEYCODE_MENU){
-
         }
 
         if(keyCode == KeyEvent.KEYCODE_HOME){
