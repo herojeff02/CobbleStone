@@ -7,15 +7,13 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SlidingDrawer;
 
@@ -36,13 +33,12 @@ import java.util.List;
 /**
  * Created by herojeff on 2016. 9. 13..
  */
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     DrawerAdapter drawerAdapterObject;
 
     GridView drawerGrid;
     SlidingDrawer slidingDrawer;
     RelativeLayout homeView;
-    ViewPager mPager;
     class Pac{
         Drawable icon;
         String name;
@@ -56,32 +52,25 @@ public class MainActivity extends AppCompatActivity{
     int REQUEST_CREATE_APPWIDGET = 100;
     int REQUEST_PICK_APPWIDGET = 120;
 
-    AppWidgetHostView hostView;
-    LinearLayout tempHostView;
-
     static boolean appLaunchable = true;
-    static boolean widgetHere = false;
     static int appPos=10;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        setTheme(R.style.LolTheme);
         if(android.os.Build.VERSION.SDK_INT<=19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setTintColor(R.color.dockColor);
             tintManager.setStatusBarTintColor(R.color.dockColor);
             tintManager.setStatusBarTintEnabled(false);
             tintManager.setNavigationBarTintEnabled(true);
-            setTheme(R.style.BackTheme);
         }
-        else{
-            setTheme(R.style.Theme);//////////////////////////////////////////////////////Manage Theme later
-        }
-
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        mPager = new ViewPager(this);
 
 
         mAppWidgetManager = AppWidgetManager.getInstance(this);
@@ -90,32 +79,59 @@ public class MainActivity extends AppCompatActivity{
         drawerGrid = (GridView) findViewById(R.id.content);//gridView 가져오기
         slidingDrawer = (SlidingDrawer)findViewById(R.id.drawer);
         homeView=(RelativeLayout)findViewById(R.id.home);
-        tempHostView = new LinearLayout(this);
-
         pm = getPackageManager();
         set_pacs();
 
+        homeView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                selectWidget();
+                if(slidingDrawer.isOpened())
+                    slidingDrawer.animateClose();
+                return false;
+            }
+        });
 
-        /*
         IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         filter.addDataScheme("package");//왜 추가?
         registerReceiver(new PacReceiver(), filter);
-        */
 
         buttonsListener();
+        //colorManager(slidingDrawer.isOpened(),tintManager);
+
+        /*
+        final PackageManager pm = getPackageManager();
+        //get a list of installed apps.
+        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        */
+
+
+
 
 
     }
 
+    /*
+    public void colorManager(boolean opened, SystemBarTintManager tintManager){
+        if(opened)
+            tintManager.setStatusBarTintEnabled(true);
+        else
+            tintManager.setStatusBarTintEnabled(false);
+    }
 
-    public void selectWidget(){
+*/
+
+    void selectWidget(){
         int appWidgetId = this.mAppWidgetHost.allocateAppWidgetId();
         Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
         pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         addEmptyData(pickIntent);
         startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
     }
-    public void addEmptyData(Intent pickIntent){
+    void addEmptyData(Intent pickIntent){
         ArrayList customInfo = new ArrayList();
         pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo);
         ArrayList customExtras = new ArrayList();
@@ -151,58 +167,25 @@ public class MainActivity extends AppCompatActivity{
             createWidget(data);
         }
     }
-    public void removeWidget() {
-        homeView.removeView(hostView);
-        widgetHere=false;
-    }
-    public void createWidget(Intent data) {
-        //View view = View.inflate(getApplicationContext(), R.layout.inflate_one, null);
+    public void removeWidget(Intent data) {
         Bundle extras = data.getExtras();
         int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-        hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+        AppWidgetHostView hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
         hostView.setAppWidget(appWidgetId, appWidgetInfo);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.CENTER_HORIZONTAL);
-        widgetHere=true;
+        homeView.removeView(hostView);
+    }
+    public void createWidget(Intent data) {
+        Bundle extras = data.getExtras();
+        int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+        AppWidgetHostView hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+        hostView.setAppWidget(appWidgetId, appWidgetInfo);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
         homeView.addView(hostView, lp);
         slidingDrawer.bringToFront();
-
-
-        /*
-        LinearLayout r1 = new LinearLayout(this);
-        LinearLayout r2 = new LinearLayout(this);
-        LinearLayout r3 = new LinearLayout(this);
-        LinearLayout r4 = new LinearLayout(this);
-        LinearLayout r5 = new LinearLayout(this);
-        if(mPager.getCurrentItem()==0)
-            r1.addView(hostView);
-        else if(mPager.getCurrentItem()==1)
-            r2.addView(tempHostView);
-        else if(mPager.getCurrentItem()==2)
-            r3.addView(tempHostView);
-        else if(mPager.getCurrentItem()==3)
-            r4.addView(tempHostView);
-        else if(mPager.getCurrentItem()==4)
-            r5.addView(tempHostView);
-
-        mAdapter.add(r1);
-        mAdapter.add(r2);
-        mAdapter.add(r3);
-        mAdapter.add(r4);
-        mAdapter.add(r5);
-
-        */
-
-
     }
-
-
-
-
-
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -224,22 +207,14 @@ public class MainActivity extends AppCompatActivity{
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.facebook.orca");
-                if (launchIntent != null) {
-                    startActivity(launchIntent);
-                }
-                //Toast.makeText(MainActivity.this, "Chat Clicked", Toast.LENGTH_SHORT).show();
+                System.out.println("chat pressed");
             }
         });
         ImageButton dial = (ImageButton)findViewById(R.id.dial);
         dial.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.android.contacts");
-                if (launchIntent != null) {
-                    startActivity(launchIntent);
-                }
-                //Toast.makeText(MainActivity.this, "Phone Clicked", Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                System.out.println("dial pressed");
             }
         });
     }
@@ -247,22 +222,14 @@ public class MainActivity extends AppCompatActivity{
     public void set_pacs() {
         final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        List<ResolveInfo> pacsList = pm.queryIntentActivities(mainIntent,0);
-        pacs = new Pac[pacsList.size()-2];
-        int j=0;
+        List<ResolveInfo> pacsList = pm.queryIntentActivities(mainIntent, 0);
+        pacs = new Pac[pacsList.size()];
         for(int i = 0;i<pacsList.size();i++){
-            pacs[j]=new Pac();
-            pacs[j].icon = pacsList.get(i).loadIcon(pm);
-            pacs[j].name = pacsList.get(i).activityInfo.name;
-            pacs[j].packageName = pacsList.get(i).activityInfo.packageName;
-            pacs[j].label = pacsList.get(i).loadLabel(pm).toString();
-            if(pacs[j].label.contains("CobbleStone")){
-                j--;
-            }
-            else if(pacs[j].label.contains("Messenger")){
-                j--;
-            }
-            j++;
+            pacs[i]=new Pac();
+            pacs[i].icon=pacsList.get(i).loadIcon(pm);
+            pacs[i].name =pacsList.get(i).activityInfo.name;
+            pacs[i].packageName =pacsList.get(i).activityInfo.packageName;
+            pacs[i].label =pacsList.get(i).loadLabel(pm).toString();
         }
         new SortApps().exchange_sort(pacs);
         drawerAdapterObject = new DrawerAdapter(this, pacs);
@@ -274,22 +241,23 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 DrawerLongClickListener(pacs, i);
-                return true;
+                return false;
             }
         });
 
     }
 
-    boolean DrawerLongClickListener(MainActivity.Pac[] pacs, int pos){
+    void DrawerLongClickListener(MainActivity.Pac[] pacs, int pos){
         appPos=pos;
+        MainActivity.Pac[] pacsForAdapter;
+        pacsForAdapter=pacs;
 
-        Uri packageURI = Uri.parse("package:" + Uri.parse(pacs[pos].packageName));
+        Uri packageURI = Uri.parse("package:" + Uri.parse(pacsForAdapter[pos].packageName));
         Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(uninstallIntent);
-        return true;
     }
 
     public class PacReceiver extends BroadcastReceiver {
@@ -299,7 +267,6 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK) {
@@ -307,28 +274,7 @@ public class MainActivity extends AppCompatActivity{
                 slidingDrawer.animateClose();
             }
         }
-        if(keyCode == KeyEvent.KEYCODE_MENU) {
-            final Context context = this;
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-            if (widgetHere) {
-                alertDialogBuilder
-                .setCancelable(true)
-                .setPositiveButton("Remove Widget", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        removeWidget();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            }
-            else
-                selectWidget();
+        if(keyCode == KeyEvent.KEYCODE_MENU){
         }
 
         if(keyCode == KeyEvent.KEYCODE_HOME){

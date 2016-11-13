@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="70dp"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal">
     <ImageView
         android:id="@+id/icon_image"
-        android:layout_width="58dp"
-        android:layout_height="58dp"
-        android:padding="5dp"/>
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="3dp"/>
     <TextView
         android:id="@+id/icon_text"
-        android:textSize="12dp"
+        android:textSize="11dp"
         android:layout_width="70dp"
         android:layout_height="40dp"
         android:maxLines="2"
         android:textColor="#FFFFFF"
         android:shadowColor="#222222"
-        android:paddingLeft="10dp"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="17"
-        android:gravity="center_vertical"
-        android:layout_weight="1"/>
+        android:gravity="center_horizontal"/>
 
 </LinearLayout>
