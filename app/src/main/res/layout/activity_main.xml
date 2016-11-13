@@ -4,10 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:clipToPadding="false"
+    android:clipToPadding="true"
+    android:theme="@style/Theme"
     tools:context="com.example.herojeff.myapplication.MainActivity"
-    android:id="@+id/home"
     android:orientation="horizontal">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="85dp"
+        android:id="@+id/home"></RelativeLayout>
 
     <SlidingDrawer
         android:layout_width="match_parent"
@@ -23,7 +28,7 @@
             android:layout_height="@dimen/mainIconSize"
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
-            android:background="@mipmap/handle"
+            android:background="@drawable/handle"
             android:id="@id/handle"
             android:gravity="bottom">
         </ImageView>
@@ -36,15 +41,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:columnWidth="40dp"
-            android:numColumns="4"
+            android:numColumns="2"
             android:background="@color/dockColor"
-            android:verticalSpacing="2dp"
-            android:horizontalSpacing="2dp"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="5dp"
             android:stretchMode="columnWidth"
             android:gravity="center"
-            android:fadingEdge="vertical"
-            android:fadingEdgeLength="5dp"
-            android:requiresFadingEdge="vertical"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:paddingTop="15dp"/>
@@ -62,7 +64,7 @@
             android:background="#00000000"
             android:layout_weight="1"
             android:id="@+id/dial"
-            android:src="@mipmap/dial"/>
+            android:src="@drawable/dial"/>
         <ImageButton
             android:layout_width="@dimen/mainIconSize"
             android:layout_height="@dimen/mainIconSize"
@@ -70,6 +72,6 @@
             android:background="#00000000"
             android:layout_weight="1"
             android:id="@+id/chat"
-            android:src="@mipmap/chat"/>
+            android:src="@drawable/chat" />
     </LinearLayout>
 </RelativeLayout>
